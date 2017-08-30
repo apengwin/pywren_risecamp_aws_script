@@ -69,5 +69,7 @@ if __name__ == '__main__':
     p.start()
     p.join()
 
+  shutil.rmtree(aws_dir)
+  os.unlink(CONFIG_PATH)
   print()
   print("All done")
