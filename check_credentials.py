@@ -9,10 +9,9 @@ import pywren
 import numpy as np
 
 ROOT_DIR = os.getcwd()
-os.chroot(ROOT_DIR)
 
 CONFIG_PATH = os.path.join(ROOT_DIR, ".pywren_config")
-CRED_PATH = os.path.join(ROOT_DIR, ".aws/credentials")
+AWS_CREDS = os.path.join(ROOT_DIR, ".aws/credentials")
 
 CRED_DIR = os.path.abspath("pywren_creds")
 
@@ -29,14 +28,14 @@ def test_function(b):
 def verify_user(root, subuser):
   base = "user_%02d.subuser.user_%02d.deploy" % (root, subuser)
 
-  if os.path.exists(CRED_PATH):
-    os.unlink(CRED_PATH)
+  if os.path.exists(AWS_CREDS):
+    os.unlink(AWS_CREDS)
 
   if os.path.exists(CONFIG_PATH):
     os.unlink(CONFIG_PATH)
 
   cred_file = base + ".creds"
-  os.symlink(os.path.join(CRED_DIR, cred_file), CRED_PATH)
+  os.symlink(os.path.join(CRED_DIR, cred_file), AWS_CREDS)
 
   pywren_config = base + ".pywren_config.yaml"
   os.symlink(os.path.join(CRED_DIR, pywren_config), CONFIG_PATH)
@@ -55,9 +54,6 @@ if __name__ == '__main__':
   aws_dir = os.path.join(ROOT_DIR, ".aws")
   print(aws_dir)
   if os.path.exists(aws_dir):
-    a = input("existing aws creds exit at ~/.aws. Overwrite?[yn]: ")
-    if a[0] != 'y':
-      exit()
     shutil.rmtree(aws_dir)
   os.makedirs(aws_dir)
 
@@ -66,6 +62,7 @@ if __name__ == '__main__':
 
   for user in range(NUM_SUBUSERS):
     # We need to fork a new process so boto3 loads the new credentials.
+    os.environ["AWS_SHARED_CREDENTIALS_FILE"] = AWS_CREDS
     p = Process(target=verify_user, args=(ROOT_USER, user))
     p.start()
     p.join()
