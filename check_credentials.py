@@ -8,15 +8,16 @@ import pywren
 
 import numpy as np
 
-ROOT_DIR = str(Path.home())
+ROOT_DIR = os.getcwd()
+os.chroot(ROOT_DIR)
 
 CONFIG_PATH = os.path.join(ROOT_DIR, ".pywren_config")
 CRED_PATH = os.path.join(ROOT_DIR, ".aws/credentials")
 
-ROOT_USER = 0
-NUM_SUBUSERS = 20
 CRED_DIR = os.path.abspath("pywren_creds")
 
+ROOT_USER = 0
+NUM_SUBUSERS = 20
 
 def test_function(b):
 #  x = np.random.normal(0, b, 1024)
@@ -52,13 +53,13 @@ def verify_user(root, subuser):
 
 if __name__ == '__main__': 
   aws_dir = os.path.join(ROOT_DIR, ".aws")
-
+  print(aws_dir)
   if os.path.exists(aws_dir):
     a = input("existing aws creds exit at ~/.aws. Overwrite?[yn]: ")
     if a[0] != 'y':
       exit()
     shutil.rmtree(aws_dir)
-  os.mkdir(aws_dir)
+  os.makedirs(aws_dir)
 
   with open(os.path.join(aws_dir, "config"), 'w') as f:
     f.write("[default]\nregion = us-west-2")
