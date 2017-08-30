@@ -2,9 +2,7 @@ import os
 import boto3
 import shutil
 from multiprocessing import Process
-from pathlib import Path
 import pywren
-
 
 import numpy as np
 
@@ -52,8 +50,10 @@ def verify_user(root, subuser):
 
 if __name__ == '__main__': 
   aws_dir = os.path.join(ROOT_DIR, ".aws")
-  print(aws_dir)
   if os.path.exists(aws_dir):
+    a = input("remove existing .aws creds?[yn]: ")
+    if a[0] != 'y':
+      exit()
     shutil.rmtree(aws_dir)
   os.makedirs(aws_dir)
 
