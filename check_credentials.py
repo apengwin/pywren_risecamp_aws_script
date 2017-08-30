@@ -11,7 +11,7 @@ ROOT_DIR = os.getcwd()
 CONFIG_PATH = os.path.join(ROOT_DIR, ".pywren_config")
 AWS_CREDS = os.path.join(ROOT_DIR, ".aws/credentials")
 
-CRED_DIR = os.path.abspath("pywren_creds")
+CREDS_TO_TRY = os.path.abspath("pywren_creds")
 
 ROOT_USER = 0
 NUM_SUBUSERS = 20
@@ -33,10 +33,10 @@ def verify_user(root, subuser):
     os.unlink(CONFIG_PATH)
 
   cred_file = base + ".creds"
-  os.symlink(os.path.join(CRED_DIR, cred_file), AWS_CREDS)
+  os.symlink(os.path.join(CREDS_TO_TRY, cred_file), AWS_CREDS)
 
   pywren_config = base + ".pywren_config.yaml"
-  os.symlink(os.path.join(CRED_DIR, pywren_config), CONFIG_PATH)
+  os.symlink(os.path.join(CREDS_TO_TRY, pywren_config), CONFIG_PATH)
 
   print(boto3.resource('iam').CurrentUser().arn)
 
